@@ -1,6 +1,42 @@
+"use client"
+
+import CustomCheckbox from "@/components/customs/customCheckbox";
+import CustomCombobox from "@/components/customs/customCombobox";
+import CustomGroupCheckBox from "@/components/customs/customGroupCheckbox";
 import Image from "next/image";
+import { useState } from "react";
+
+const jobPreferences = [
+  {
+    id: "remote",
+    label: "Work from Anywhere",
+    description: "สามารถทำงานจากที่ไหนก็ได้",
+    defaultChecked: true,
+  },
+  {
+    id: "full-insurance",
+    label: "ประกันสุขภาพเต็มรูปแบบ",
+    description: "ครอบคลุมทั้ง OPD และ IPD รวมถึงทันตกรรม",
+    defaultChecked: false,
+  },
+  {
+    id: "bonus",
+    label: "โบนัสประจำปี",
+    description: "พิจารณาตามผลประกอบการและ",
+    defaultChecked: false,
+  },
+  {
+    id: "expired-offer",
+    label: "สิทธิ์จองหุ้นบริษัท (ESOP)",
+    description: "ข้อเสนอนี้หมดเขตการรับสิทธิ์แล้ว",
+    disabled: true, // ทดสอบสถานะที่กดไม่ได้
+    defaultChecked: false,
+  }
+];
 
 export default function Home() {
+  const [selectedBenefits, setSelectedBenefits] = useState<string[]>(["remote"]);
+  
   return (
     <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
       <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
@@ -12,6 +48,12 @@ export default function Home() {
           height={20}
           priority
         />
+        <CustomCheckbox label="ทดสอบ2" defaultChecked id="2" />
+        <CustomGroupCheckBox name="benefits-group" dataSet={jobPreferences} value={selectedBenefits}           // ส่ง state ลงไป
+        onChange={setSelectedBenefits} className="w-full"/>
+
+        <CustomCombobox/>
+
         <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
           <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
             To get started, edit the page.tsx file.
