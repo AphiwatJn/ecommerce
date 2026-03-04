@@ -4,8 +4,6 @@ import CustomButton from "@/components/customs/customButton";
 import CustomCheckbox from "@/components/customs/customCheckbox";
 import CustomCombobox, { Framework } from "@/components/customs/customCombobox";
 import CustomGroupCheckBox from "@/components/customs/customGroupCheckbox";
-import { Button } from "@/components/ui/button";
-import Image from "next/image";
 import React, { useState } from "react";
 
 const jobPreferences = [
@@ -40,11 +38,10 @@ const jobPreferences = [
 export default function Home() {
   const [selectedBenefits, setSelectedBenefits] = useState<string[]>(["remote"]);
 
-  const [value, setValue] = useState<
-    Framework | Framework[] | null
-  >([])
+  const [value, setValue] = React.useState<Framework | null>(null)
+  const [value2, setValue2] = React.useState<Framework[]>([])
 
-  const [disabled , setDisabled] = useState(false)
+  const [disabled, setDisabled] = useState(false)
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
@@ -55,15 +52,20 @@ export default function Home() {
           onChange={setSelectedBenefits} className="w-full" />
 
         <CustomCombobox
-          multiple
+          placeholder="Select framework"
           value={value}
           setValue={setValue}
-          placeholder="Select framework"
-          emptyContext="No framework found"
+        />
+
+        <CustomCombobox
+          multiple
+          placeholder="Select frameworks"
+          value={value2}
+          setValue={setValue2}
         />
         <div className="flex flex-row gap-2">
-          <CustomButton label="ทดสอบ1" onClick={()=>setDisabled(!disabled)} />
-          <CustomButton label="ทดสอบ" loading={disabled} withIcon='inline-end' rounded='rounded-full' onClick={()=>setDisabled(!disabled)} />
+          <CustomButton label="ทดสอบ1" onClick={() => setDisabled(!disabled)} />
+          <CustomButton label="ทดสอบ" loading={disabled} withIcon='inline-end' rounded='rounded-full' onClick={() => setDisabled(!disabled)} />
         </div>
 
 

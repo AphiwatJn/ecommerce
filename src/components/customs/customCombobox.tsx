@@ -23,48 +23,81 @@ export const frameworks: Framework[] = [
   { label: "Nuxt", value: "nuxt" },
 ]
 
-interface CustomComboboxProp {
-  placeholder?: string
-  emptyContext?: string
-  multiple?: boolean
-  value: Framework | Framework[] | null
-  setValue: React.Dispatch<
-    React.SetStateAction<Framework | Framework[] | null>
-  >
+/* ------------------------------ */
+/* Discriminated Union Props */
+/* ------------------------------ */
+
+type SingleProps = {
+  multiple?: false
+  value: Framework | null
+  setValue: React.Dispatch<React.SetStateAction<Framework | null>>
 }
 
-function CustomCombobox({
-  placeholder,
-  emptyContext = "",
-  multiple = true,
-  value,
-  setValue,
-}: CustomComboboxProp) {
+type MultipleProps = {
+  multiple: true
+  value: Framework[]
+  setValue: React.Dispatch<React.SetStateAction<Framework[]>>
+}
 
-  return (
-    <Combobox<Framework>
-      items={frameworks}
-      multiple={multiple}
-      value={value}
-      onValueChange={setValue}
-      itemToStringValue={(framework) => framework.label}
-    >
-      {multiple ? (
+type BaseProps = {
+  placeholder?: string
+  emptyContext?: string
+}
+
+type CustomComboboxProps = BaseProps & (SingleProps | MultipleProps)
+
+function CustomCombobox(props: CustomComboboxProps) {
+  const {
+    placeholder,
+    emptyContext = "No results found.",
+  } = props
+
+  if (props.multiple) {
+    return (
+      <Combobox<Framework, true>
+        items={frameworks}
+        multiple
+        value={props.value}
+        onValueChange={props.setValue}
+        itemToStringValue={(framework) => framework.label}
+      >
         <ComboboxChips>
           <ComboboxValue>
-            {Array.isArray(value) &&
-              value.map((item) => (
-                <ComboboxChip key={item.value}>
-                  {item.label}
-                </ComboboxChip>
-              ))}
+            {props.value.map((item) => (
+              <ComboboxChip key={item.value}>
+                {item.label}
+              </ComboboxChip>
+            ))}
           </ComboboxValue>
 
           <ComboboxChipsInput placeholder={placeholder} />
         </ComboboxChips>
-      ) : (
-        <ComboboxInput placeholder={placeholder} />
-      )}
+
+        <ComboboxContent>
+          <ComboboxEmpty>{emptyContext}</ComboboxEmpty>
+          <ComboboxList>
+            {(framework) => (
+              <ComboboxItem
+                key={framework.value}
+                value={framework}
+              >
+                {framework.label}
+              </ComboboxItem>
+            )}
+          </ComboboxList>
+        </ComboboxContent>
+      </Combobox>
+    )
+  }
+
+  return (
+    <Combobox<Framework, false>
+      items={frameworks}
+      value={props.value}
+      onValueChange={props.setValue}
+      itemToStringValue={(framework) => framework.label}
+    >
+      <ComboboxInput placeholder={placeholder} />
 
       <ComboboxContent>
         <ComboboxEmpty>{emptyContext}</ComboboxEmpty>
