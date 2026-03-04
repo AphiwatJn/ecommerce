@@ -1,5 +1,4 @@
 import * as React from "react"
- 
 import {
   Combobox,
   ComboboxChip,
@@ -12,43 +11,42 @@ import {
   ComboboxList,
   ComboboxValue,
 } from "@/components/ui/combobox"
- 
-type Framework = {
+
+export type Framework = {
   label: string
   value: string
 }
- 
-const frameworks: Framework[] = [
+
+export const frameworks: Framework[] = [
   { label: "Next.js", value: "next" },
   { label: "SvelteKit", value: "sveltekit" },
   { label: "Nuxt", value: "nuxt" },
 ]
+
 interface CustomComboboxProp {
-    placeholder : string
-    emptyContext : string
-    multiple: boolean | undefined
+  placeholder?: string
+  emptyContext?: string
+  multiple?: boolean
+  value: Framework | Framework[] | null
+  setValue: React.Dispatch<
+    React.SetStateAction<Framework | Framework[] | null>
+  >
 }
 
 function CustomCombobox({
   placeholder,
-  emptyContext = '',
+  emptyContext = "",
   multiple = true,
+  value,
+  setValue,
 }: CustomComboboxProp) {
-
-  const [value, setValue] = React.useState<
-    Framework | Framework[] | null
-  >(multiple ? [] : null)
-
-  React.useEffect(() => {
-    setValue(multiple ? [] : null)
-  }, [multiple])
 
   return (
     <Combobox<Framework>
       items={frameworks}
       multiple={multiple}
       value={value}
-      onValueChange={(val) => setValue(val)}
+      onValueChange={setValue}
       itemToStringValue={(framework) => framework.label}
     >
       {multiple ? (
@@ -61,6 +59,7 @@ function CustomCombobox({
                 </ComboboxChip>
               ))}
           </ComboboxValue>
+
           <ComboboxChipsInput placeholder={placeholder} />
         </ComboboxChips>
       ) : (
@@ -83,4 +82,5 @@ function CustomCombobox({
     </Combobox>
   )
 }
+
 export default CustomCombobox
